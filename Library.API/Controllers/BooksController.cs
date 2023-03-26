@@ -56,6 +56,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
 
     public async Task<IActionResult> AddBook(CreateBookCommand command)
     {
@@ -65,6 +66,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> UpdateBook(UpdateBookCommand command)
     {
         await _mediator.Send(command);
@@ -73,6 +75,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> DeleteBook(int id)
     {
         await _mediator.Send(new DeleteBookCommand(id));
