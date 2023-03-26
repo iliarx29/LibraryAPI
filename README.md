@@ -8,6 +8,7 @@ This project includes CRUD operations with books.
 - Delete book
 - Get by Id or ISBN
 Operations Create, Update, Delete require authentication. You can registrate a new User and then login to application, or you can sign in by default credentials: 
+
 email: test@test.com
 password: Qwerty1234!
 ## Installation
