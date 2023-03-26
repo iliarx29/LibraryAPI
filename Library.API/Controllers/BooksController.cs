@@ -1,4 +1,6 @@
-﻿using Library.Application.Books.Commands.CreateBook;
+﻿using AutoMapper;
+using Library.API.Models;
+using Library.Application.Books.Commands.CreateBook;
 using Library.Application.Books.Commands.DeleteBook;
 using Library.Application.Books.Commands.UpdateBook;
 using Library.Application.Books.Queries.GetBookById;
@@ -15,10 +17,12 @@ namespace Library.API.Controllers;
 public class BooksController : ControllerBase
 {
     private readonly ISender _mediator;
+    private readonly IMapper _mapper;
 
-    public BooksController(ISender mediator)
+    public BooksController(ISender mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -26,7 +30,9 @@ public class BooksController : ControllerBase
     {
         var books = await _mediator.Send(new GetBooksQuery());
 
-        return Ok(books);
+        var booksResponse = _mapper.Map<List<BookResponse>>(books);
+
+        return Ok(booksResponse);
     }
 
     [HttpGet("{id}")]
@@ -34,7 +40,9 @@ public class BooksController : ControllerBase
     {
         var book = await _mediator.Send(new GetBookByIdQuery(id));
 
-        return Ok(book);
+        var bookResponse = _mapper.Map<BookResponse>(book);
+
+        return Ok(bookResponse);
     }
 
     [HttpGet("isbn/{isbn}")]
@@ -42,11 +50,13 @@ public class BooksController : ControllerBase
     {
         var book = await _mediator.Send(new GetBookByISBNQuery(isbn));
 
-        return Ok(book);
+        var bookResponse = _mapper.Map<BookResponse>(book);
+
+        return Ok(bookResponse);
     }
 
     [HttpPost]
-    [Authorize]
+
     public async Task<IActionResult> AddBook(CreateBookCommand command)
     {
         var book = await _mediator.Send(command);
@@ -55,7 +65,6 @@ public class BooksController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize]
     public async Task<IActionResult> UpdateBook(UpdateBookCommand command)
     {
         await _mediator.Send(command);
@@ -64,7 +73,6 @@ public class BooksController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize]
     public async Task<IActionResult> DeleteBook(int id)
     {
         await _mediator.Send(new DeleteBookCommand(id));

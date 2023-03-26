@@ -1,3 +1,4 @@
+using Library.API.Profiles;
 using Library.Application;
 using Library.Infrastructure;
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 

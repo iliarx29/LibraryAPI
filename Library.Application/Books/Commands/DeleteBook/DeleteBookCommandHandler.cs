@@ -1,4 +1,5 @@
 ﻿using Library.Application.Abstractions;
+using Library.Application.Exceptions;
 using MediatR;
 
 namespace Library.Application.Books.Commands.DeleteBook;
@@ -16,7 +17,7 @@ public class DeleteBookCommandHandler : IRequestHandler<DeleteBookCommand>
         var book = await _context.Books.FindAsync(command.Id, cancellationToken);
 
         if (book is null)
-            throw new ArgumentNullException(nameof(book), "Book is null");
+            throw new NotFoundException($"Book with id {command.Id} is not found");
 
         _context.Books.Remove(book);
         await _context.SaveChangesAsync(cancellationToken);

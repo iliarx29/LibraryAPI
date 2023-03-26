@@ -2,18 +2,23 @@
 using Library.Application.Abstractions;
 using Library.Domain.Entities;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library.Application.Books.Commands.CreateBook;
 public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, Book>
 {
     private readonly IApplicationContext _context;
+    private readonly IValidator<CreateBookCommand> _validator;
 
-    public CreateBookCommandHandler(IApplicationContext context)
+    public CreateBookCommandHandler(IApplicationContext context, IValidator<CreateBookCommand> validator)
     {
         _context = context;
+        _validator = validator;
     }
     public async Task<Book> Handle(CreateBookCommand command, CancellationToken cancellationToken)
-    {     
+    {
+        _validator.ValidateAndThrow(command);
+
         var book = new Book()
         {
             ISBN = command.ISBN,
